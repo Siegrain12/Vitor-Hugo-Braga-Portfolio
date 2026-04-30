@@ -18,9 +18,9 @@ export default function ProjectModal({ project, isOpen, onClose }) {
       className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
       onClick={handleBackdropClick}
     >
-      <div className="bg-[#0d1224] rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-purple-500/20 animate-in fade-in zoom-in duration-300">
+      <div className="bg-[#0d1224] rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-primary-cyan/20 animate-in fade-in zoom-in duration-300">
         {/* Header com título e botão fechar */}
-        <div className="sticky top-0 bg-gradient-to-r from-[#0d1224] to-[#1a1443] border-b border-purple-500/20 p-6 flex items-center justify-between">
+        <div className="sticky top-0 bg-gradient-to-r from-[#0d1224] to-[#1a1443] border-b border-primary-cyan/20 p-6 flex items-center justify-between">
           <h2 className="text-2xl font-bold bg-gradient-purple-cyan bg-clip-text text-transparent">
             {project.name}
           </h2>
@@ -46,7 +46,7 @@ export default function ProjectModal({ project, isOpen, onClose }) {
 
           {/* Papel/Role */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-purple-500/10 rounded-lg p-4 border border-purple-500/20">
+            <div className="bg-primary-purple/10 rounded-lg p-4 border border-primary-purple/20">
               <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
                 Seu Papel
               </p>
@@ -54,7 +54,7 @@ export default function ProjectModal({ project, isOpen, onClose }) {
                 {project.role}
               </p>
             </div>
-            <div className="bg-indigo-500/10 rounded-lg p-4 border border-indigo-500/20">
+            <div className="bg-primary-indigo/10 rounded-lg p-4 border border-primary-indigo/20">
               <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">
                 Projeto
               </p>
@@ -87,7 +87,7 @@ export default function ProjectModal({ project, isOpen, onClose }) {
           </div>
 
           {/* Botões de Ação */}
-          <div className="flex gap-4 pt-4 border-t border-purple-500/20">
+          <div className="flex gap-4 pt-4 border-t border-primary-cyan/20">
             {project.code ? (
               <a
                 href={project.code}
@@ -124,9 +124,9 @@ export default function ProjectModal({ project, isOpen, onClose }) {
           </div>
 
           {/* Nota */}
-          <div className="bg-cyan-500/10 rounded-lg p-4 border border-cyan-500/20 text-sm text-gray-400">
+          <div className="bg-primary-cyan/10 rounded-lg p-4 border border-primary-cyan/20 text-sm text-gray-400">
             <p>
-              💡 <span className="text-cyan-400 font-semibold">Dica:</span> Você pode adicionar os links do GitHub e Demo nos arquivos de dados do projeto.
+              💡 <span className="text-primary-cyan font-semibold">Dica:</span> Você pode adicionar os links do GitHub e Demo nos arquivos de dados do projeto.
             </p>
           </div>
         </div>

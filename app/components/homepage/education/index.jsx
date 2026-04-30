@@ -18,17 +18,17 @@ function Education() {
       />
       <div className="flex justify-center -translate-y-[1px]">
         <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-violet-500 to-transparent  w-full" />
+          <div className="h-[1px] bg-gradient-to-r from-transparent via-primary-purple to-transparent  w-full" />
         </div>
       </div>
 
       <div className="flex justify-center my-5 lg:py-8">
         <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-          <span className="bg-[#1a1443] w-fit text-white p-2 px-5 text-xl rounded-md">
-            Educations
+          <span className="w-24 h-[2px] bg-gradient-to-r from-primary-purple to-primary-cyan"></span>
+          <span className="bg-gradient-purple-cyan bg-clip-text text-transparent p-2 px-5 text-xl rounded-md font-bold">
+            Formação
           </span>
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
+          <span className="w-24 h-[2px] bg-gradient-to-r from-primary-cyan to-primary-purple"></span>
         </div>
       </div>
 
@@ -54,12 +54,12 @@ function Education() {
                         className="absolute bottom-0 opacity-80"
                       />
                       <div className="flex justify-center">
-                        <p className="text-xs sm:text-sm text-[#16f2b3]">
+                        <p className="text-xs sm:text-sm text-primary-cyan">
                           {education.duration}
                         </p>
                       </div>
                       <div className="flex items-center gap-x-8 px-3 py-5">
-                        <div className="text-violet-500  transition-all duration-300 hover:scale-125">
+                        <div className="text-primary-indigo  transition-all duration-300 hover:scale-125">
                           <BsPersonWorkspace size={36} />
                         </div>
                         <div>
