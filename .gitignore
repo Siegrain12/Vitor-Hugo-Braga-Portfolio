@@ -34,3 +34,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE
+.vs/
+.vscode/
+
+# Subrepositórios acidentais
+Vitor-Hugo-Braga-Portfolio/
+
