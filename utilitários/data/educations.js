@@ -14,7 +14,7 @@ export const educations = [
   {
     id: 3,
     title: "Experiência Prática",
-    duration: "2022 - Present",
+    duration: "2022 - Presente",
     institution: "Desenvolvimento em projetos reais e pessoais",
   }
 ]

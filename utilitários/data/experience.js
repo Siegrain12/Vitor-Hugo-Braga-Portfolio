@@ -3,7 +3,7 @@ export const experiences = [
     id: 1,
     title: 'Analista QA / Developer',
     company: "MGS",
-    duration: "(Jan 2022 - Present)"
+    duration: "(Jan 2022 - Presente)"
   },
   {
     id: 2,
@@ -15,6 +15,6 @@ export const experiences = [
     id: 3,
     title: "Desenvolvedor Full Stack",
     company: "Projetos Pessoais - Portfólio",
-    duration: "(2022 - Present)"
+    duration: "(2022 - Presente)"
   }
 ]
