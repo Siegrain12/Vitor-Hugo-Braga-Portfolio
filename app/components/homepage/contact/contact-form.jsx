@@ -1,6 +1,6 @@
 "use client";
 // @flow strict
-import { isValidEmail } from "@/utils/check-email";
+import { isValidEmail } from "@/utilitários/check-email";
 import axios from "axios";
 import { useState } from "react";
 import { TbMailForward } from "react-icons/tb";

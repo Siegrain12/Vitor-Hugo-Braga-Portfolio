@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { projectsData } from '@/utils/data/projects-data';
+import { projectsData } from '@/utilitários/data/projects-data';
 import ProjectCard from './project-card';
 import ProjectModal from './ProjectModal';
 

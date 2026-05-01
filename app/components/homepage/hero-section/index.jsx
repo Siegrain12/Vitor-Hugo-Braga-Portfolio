@@ -1,6 +1,6 @@
 // @flow strict
 
-import { personalData } from "@/utils/data/personal-data";
+import { personalData } from "@/utilitários/data/personal-data";
 import Image from "next/image";
 import Link from "next/link";
 import { BsGithub, BsLinkedin } from "react-icons/bs";

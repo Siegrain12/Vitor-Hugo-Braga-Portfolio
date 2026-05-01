@@ -19,5 +19,5 @@ export const personalData = {
   leetcode: "",
   devUsername: "",
 
-  resume: "/resume/Vitor-Hugo-Braga-CV.pdf"
+  resume: "/resume/curriculo Vitor Hugo Braga.pdf"
 };
