@@ -5,7 +5,7 @@ export const projectsData = [
         description: "Aplicação Full Stack com sistema completo de login, cadastro de usuários, agendamentos, consultas e histórico de atividades. Desenvolvida com APIs robustas integradas a banco de dados, frontend responsivo e funcionalidades avançadas para gerenciamento de dados em tempo real.",
         tools: ['React', 'Node.js', 'Firebase', 'SQL', 'REST API', 'CSS', 'TypeScript'],
         role: 'Full Stack Developer',
-        code: '',
+        code: 'https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-planit',
         demo: '',
     },
     {
@@ -14,7 +14,7 @@ export const projectsData = [
         description: 'Plataforma completa para gerenciamento de serviços veterinários. Implementa login seguro, cadastro de clientes, agendamento de consultas, registros de histórico clínico e consultas de dados. Desenvolvida com arquitetura Full Stack profissional, APIs escaláveis e interface intuitiva.',
         tools: ['React', 'Node.js', 'MongoDB', 'PostgreSQL', 'REST API', 'Bootstrap', 'TypeScript'],
         role: 'Full Stack Developer',
-        code: '',
+        code: 'https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2026-1-e5-proj-empext-t2-vetconnect',
         demo: '',
     },
     {
@@ -23,7 +23,7 @@ export const projectsData = [
         description: 'Solução integrada com funcionalidades essenciais de login, cadastro, sistema de agendamentos, consultas de dados e histórico de operações. Aplicação Full Stack com APIs bem estruturadas, banco de dados otimizado, e frontend dinâmico para melhor experiência do usuário.',
         tools: ['React', 'Node.js', 'Firebase', 'MongoDB', 'REST API', 'Tailwind CSS', 'TypeScript'],
         role: 'Full Stack Developer',
-        code: '',
+        code: 'https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-2-e4-proj-infra-t3-solupay',
         demo: '',
     },
     {
@@ -31,7 +31,7 @@ export const projectsData = [
         name: 'Mais Projetos em Desenvolvimento',
         description: "Atualmente trabalhando em novos projetos que exploram as mais recentes tecnologias em desenvolvimento web e mobile. Focando em criar soluções escaláveis, performáticas e inovadoras que resolvem problemas reais.",
         tools: ['React', 'Node.js', 'Next.js', 'Docker', 'Azure', 'PostgreSQL'],
-        code: '',
+        code: 'https://github.com/Siegrain12',
         role: 'Full Stack Developer',
         demo: '',
     }

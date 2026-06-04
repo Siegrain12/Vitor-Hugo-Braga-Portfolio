@@ -8,6 +8,7 @@ import { FaFacebook, FaTwitterSquare } from "react-icons/fa";
 import { MdDownload } from "react-icons/md";
 import { RiContactsFill } from "react-icons/ri";
 import { SiLeetcode } from "react-icons/si";
+import { SiGmail } from "react-icons/si";
 
 function HeroSection() {
   return (
@@ -32,41 +33,60 @@ function HeroSection() {
           </h1>
 
           <div className="my-12 flex items-center gap-5">
-            <Link
-              href={personalData.github}
-              target='_blank'
-              className="transition-all text-primary-cyan hover:scale-125 duration-300"
-            >
-              <BsGithub size={30} />
-            </Link>
-            <Link
-              href={personalData.linkedIn}
-              target='_blank'
-              className="transition-all text-primary-purple hover:scale-125 duration-300"
-            >
-              <BsLinkedin size={30} />
-            </Link>
-            <Link
-              href={personalData.facebook}
-              target='_blank'
-              className="transition-all text-primary-indigo hover:scale-125 duration-300"
-            >
-              <FaFacebook size={30} />
-            </Link>
-            <Link
-              href={personalData.leetcode}
-              target='_blank'
-              className="transition-all text-primary-cyan hover:scale-125 duration-300"
-            >
-              <SiLeetcode size={30} />
-            </Link>
-            <Link
-              href={personalData.twitter}
-              target='_blank'
-              className="transition-all text-primary-indigo hover:scale-125 duration-300"
-            >
-              <FaTwitterSquare size={30} />
-            </Link>
+            {personalData.github && (
+              <Link
+                href={personalData.github}
+                target='_blank'
+                className="transition-all text-primary-cyan hover:scale-125 duration-300"
+              >
+                <BsGithub size={30} />
+              </Link>
+            )}
+            {personalData.linkedIn && (
+              <Link
+                href={personalData.linkedIn}
+                target='_blank'
+                className="transition-all text-primary-purple hover:scale-125 duration-300"
+              >
+                <BsLinkedin size={30} />
+              </Link>
+            )}
+            {personalData.gmail && (
+              <Link
+                href={personalData.gmail}
+                target='_blank'
+                className="transition-all text-primary-cyan hover:scale-125 duration-300"
+              >
+                <SiGmail size={30} />
+              </Link>
+            )}
+            {personalData.facebook && (
+              <Link
+                href={personalData.facebook}
+                target='_blank'
+                className="transition-all text-primary-indigo hover:scale-125 duration-300"
+              >
+                <FaFacebook size={30} />
+              </Link>
+            )}
+            {personalData.leetcode && (
+              <Link
+                href={personalData.leetcode}
+                target='_blank'
+                className="transition-all text-primary-cyan hover:scale-125 duration-300"
+              >
+                <SiLeetcode size={30} />
+              </Link>
+            )}
+            {personalData.twitter && (
+              <Link
+                href={personalData.twitter}
+                target='_blank'
+                className="transition-all text-primary-indigo hover:scale-125 duration-300"
+              >
+                <FaTwitterSquare size={30} />
+              </Link>
+            )}
           </div>
 
           <div className="flex items-center gap-3">

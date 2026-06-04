@@ -173,7 +173,7 @@ Solução integrada com funcionalidades de agendamento e gerenciamento de dados.
 
 ## Contato :email:
 
-- 📧 **Email**: vitorsilv999a@gmail.com
+- 📧 **Email**: vitorbraga1777@gmail.com
 - 📱 **Telefone**: +55 31 99087-9334
 - 🔗 **GitHub**: [github.com/Siegrain12](https://github.com/Siegrain12)
 - 💼 **LinkedIn**: [LinkedIn Profile](https://www.linkedin.com/in/vitor-hugo-braga-da-silva-b40842257/)

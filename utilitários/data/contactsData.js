@@ -1,5 +1,6 @@
 export const contactsData = {
     email: 'vitorsilv999a@gmail.com',
+    gmailContact: 'vitorbraga1777@gmail.com',
     phone: '+55 31 99087-9334',
     address: 'Rua Nossa Senhora de Loreto, 180 - Belo Horizonte, MG',
     github: 'https://github.com/Siegrain12',

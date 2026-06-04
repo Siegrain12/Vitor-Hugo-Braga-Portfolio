@@ -62,11 +62,21 @@ function Education() {
                         <div className="text-primary-indigo  transition-all duration-300 hover:scale-125">
                           <BsPersonWorkspace size={36} />
                         </div>
-                        <div>
+                        <div className="flex-1">
                           <p className="text-base sm:text-xl mb-2 font-medium uppercase">
                             {education.title}
                           </p>
-                          <p className="text-sm sm:text-base">{education.institution}</p>
+                          <p className="text-sm sm:text-base mb-2">{education.institution}</p>
+                          {education.certificate && (
+                            <a
+                              href={education.certificate}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 text-xs font-semibold text-primary-cyan hover:text-primary-purple transition-colors border border-primary-cyan/30 hover:border-primary-purple/50 rounded px-2 py-1 bg-primary-cyan/5"
+                            >
+                              <span>Visualizar Certificado</span>
+                            </a>
+                          )}
                         </div>
                       </div>
                     </div>
