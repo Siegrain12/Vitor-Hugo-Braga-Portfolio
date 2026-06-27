@@ -73,7 +73,7 @@ function ContactSection() {
               </Link>
 
               <a
-                href="mailto:vitorbraga1777@gmail.com"
+                href={personalData.gmail || `mailto:${personalData.email}`}
                 className="group w-12 h-12 flex items-center justify-center rounded border border-[#1a2040] bg-[#0a0e1a] hover:border-cyan-500/60 hover:shadow-[0_0_16px_rgba(0,229,255,0.2)] transition-all duration-300"
                 aria-label="Gmail"
               >

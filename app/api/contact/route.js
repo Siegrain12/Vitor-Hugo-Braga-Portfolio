@@ -73,39 +73,63 @@ export async function POST(request) {
     const { name, email, message: userMessage } = payload;
     const token = process.env.TELEGRAM_BOT_TOKEN;
     const chat_id = process.env.TELEGRAM_CHAT_ID;
+    const emailUser = process.env.EMAIL_ADDRESS;
+    const emailPass = process.env.GMAIL_PASSKEY;
 
     // Validate environment variables
-    if (!token || !chat_id) {
+    if (!emailUser && !token) {
       return NextResponse.json({
         success: false,
-        message: 'Telegram token or chat ID is missing.',
-      }, { status: 400 });
+        message: 'Nenhum canal de envio (Email ou Telegram) está configurado.',
+      }, { status: 500 });
     }
 
     const message = `New message from ${name}\n\nEmail: ${email}\n\nMessage:\n\n${userMessage}\n\n`;
 
-    // Send Telegram message
-    const telegramSuccess = await sendTelegramMessage(token, chat_id, message);
+    let emailSuccess = false;
+    let telegramSuccess = false;
+    let attemptedEmail = false;
+    let attemptedTelegram = false;
 
-    // Send email
-    const emailSuccess = await sendEmail(payload, message);
+    // Send email if configured
+    if (emailUser && emailPass) {
+      attemptedEmail = true;
+      emailSuccess = await sendEmail(payload, message);
+    }
 
-    if (telegramSuccess && emailSuccess) {
+    // Send Telegram message if configured
+    if (token && chat_id) {
+      attemptedTelegram = true;
+      telegramSuccess = await sendTelegramMessage(token, chat_id, message);
+    }
+
+    // Check if what was attempted succeeded
+    const emailOk = attemptedEmail ? emailSuccess : true;
+    const telegramOk = attemptedTelegram ? telegramSuccess : true;
+
+    if ((attemptedEmail || attemptedTelegram) && emailOk && telegramOk) {
       return NextResponse.json({
         success: true,
-        message: 'Message and email sent successfully!',
+        message: 'Mensagem enviada com sucesso!',
       }, { status: 200 });
+    }
+
+    let errorMsg = 'Falha ao enviar a mensagem.';
+    if (attemptedEmail && !emailSuccess) {
+      errorMsg = 'Falha ao enviar o email. Verifique as configurações.';
+    } else if (attemptedTelegram && !telegramSuccess) {
+      errorMsg = 'Falha ao enviar a mensagem por Telegram.';
     }
 
     return NextResponse.json({
       success: false,
-      message: 'Failed to send message or email.',
+      message: errorMsg,
     }, { status: 500 });
   } catch (error) {
     console.error('API Error:', error.message);
     return NextResponse.json({
       success: false,
-      message: 'Server error occurred.',
+      message: 'Ocorreu um erro no servidor.',
     }, { status: 500 });
   }
 };
