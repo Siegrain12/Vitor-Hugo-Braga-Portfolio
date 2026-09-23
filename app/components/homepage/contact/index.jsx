@@ -7,27 +7,16 @@ import { IoLogoGithub } from "react-icons/io";
 import { MdAlternateEmail, MdLocationOn } from "react-icons/md";
 import { SiGmail } from "react-icons/si";
 import ContactForm from './contact-form';
+import SectionHeader from '../../helper/section-header';
 
 function ContactSection() {
   return (
     <div id="contact" className="my-12 lg:my-24 relative border-t border-[#25213b]">
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-primary-purple to-transparent w-full" />
-        </div>
-      </div>
+      <SectionHeader title="Entre em Contato" command="ssh vitor@portfolio" />
 
-      {/* Header */}
-      <div className="flex flex-col items-center my-8 lg:py-4 gap-3">
-        <h2 className="text-2xl lg:text-4xl font-extrabold tracking-widest text-white uppercase">
-          ENTRE EM CONTATO
-        </h2>
-        <p className="text-primary-cyan font-mono text-sm text-center">
-          {'>'} Procurando companheiros? Vamos nos conectar e construir algo épico
-        </p>
-
+      <div className="flex flex-col items-center mb-8">
         {/* Available for work badge */}
-        <div className="mt-2 flex items-center gap-3 px-5 py-2 rounded-full border border-green-500/30 bg-green-500/5">
+        <div className="flex items-center gap-3 px-5 py-2 rounded-full border border-green-500/30 bg-green-500/5">
           <div className="relative">
             <span className="w-2.5 h-2.5 rounded-full bg-green-400 inline-block" />
             <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-40" />

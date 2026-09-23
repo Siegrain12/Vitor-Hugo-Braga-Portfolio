@@ -13,17 +13,25 @@ async function getData() {
     return [];
   }
 
-  const res = await fetch(`https://dev.to/api/articles?username=${personalData.devUsername}`)
+  // O blog é uma seção opcional: se o dev.to estiver fora do ar ou mudar a API,
+  // a seção some em vez de derrubar a página inteira.
+  try {
+    const res = await fetch(
+      `https://dev.to/api/articles?username=${personalData.devUsername}`,
+      { next: { revalidate: 3600 } }
+    );
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+    if (!res.ok) return [];
+
+    const data = await res.json();
+
+    if (!Array.isArray(data)) return [];
+
+    return data.filter((item) => item?.cover_image);
+  } catch (error) {
+    console.error('Falha ao buscar artigos do dev.to:', error.message);
+    return [];
   }
-
-  const data = await res.json();
-
-  const filtered = data.filter((item) => item?.cover_image).sort(() => Math.random() - 0.5);
-
-  return filtered;
 };
 
 export default async function Home() {

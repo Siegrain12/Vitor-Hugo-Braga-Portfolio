@@ -1,266 +1,299 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { IoClose, IoPaperPlane } from 'react-icons/io5';
 import { BsRobot } from 'react-icons/bs';
+import { personalData } from '@/utilitários/data/personal-data';
 
-// Perfil do Vitor para o assistente responder perguntas
-const VITOR_PROFILE = `
-Você é o assistente virtual do portfólio de Vitor Hugo Braga, um desenvolvedor Full Stack de Belo Horizonte - MG, Brasil.
+const GREETING =
+  'Olá! Sou o assistente do Vitor. Pergunte sobre as habilidades, os projetos ou como entrar em contato. 🚀';
 
-## Sobre o Vitor:
-- Nome: Vitor Hugo Braga
-- Cargo atual: Analista QA / Developer na MGS (desde Jan 2022)
-- Formação: Análise e Desenvolvimento de Sistemas - PUC Minas (2024 - presente)
-- Email: vitorsilv999a@gmail.com
-- LinkedIn: https://www.linkedin.com/in/vitor-hugo-braga-da-silva-b40842257/
-- GitHub: https://github.com/Siegrain12
+const SUGGESTIONS = [
+  'Quais as principais skills?',
+  'Me fale do Planit',
+  'Como entro em contato?',
+];
 
-## Habilidades Técnicas:
-- Frontend (Avançado): React, JavaScript, HTML, CSS
-- Frontend (Intermediário): Next.js, TypeScript, Tailwind, Bootstrap
-- Backend (Intermediário): Node.js, Firebase
-- Backend (Básico): Java, C#
-- Banco de Dados (Intermediário): MongoDB, PostgreSQL, SQL
-- Banco de Dados (Básico): MySQL
-- DevOps (Básico): Docker, Azure
-- Ferramentas: Git (Avançado), Figma (Básico)
+const formatTime = () =>
+  new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-## Projetos em Destaque:
-1. **Planit** - Aplicação Full Stack com sistema de login, cadastro, agendamentos, consultas e histórico. Tech: React, Node.js, Firebase, SQL, TypeScript.
-2. **VetConnect** - Plataforma de gerenciamento de serviços veterinários com login, agendamento de consultas, histórico clínico. Tech: React, Node.js, MongoDB, PostgreSQL, TypeScript.
-3. **SoluPlay** - Solução integrada de agendamentos, consultas e histórico de operações. Tech: React, Node.js, Firebase, MongoDB, TypeScript.
+// O modelo responde em markdown. Em vez de puxar uma biblioteca inteira (ou
+// usar dangerouslySetInnerHTML), tratamos só os três casos que ele usa e
+// devolvemos elementos React — nada de HTML vindo do modelo é interpretado.
+const INLINE_MD = /(\*\*[^*]+\*\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
 
-## Reconhecimentos:
-- Certificado de Destaque Acadêmico da PUC Minas
+function renderRich(text) {
+  return text.split(INLINE_MD).map((part, i) => {
+    if (!part) return null;
 
-## Instruções:
-- Responda SEMPRE em português do Brasil.
-- Seja simpático, animado e use linguagem de desenvolvedor mas acessível.
-- Se perguntarem sobre habilidades, mencione o nível e a categoria.
-- Se perguntarem sobre projetos, dê detalhes das tecnologias usadas.
-- Se perguntarem algo que não sabe, redirecione para o email ou LinkedIn.
-- Mantenha respostas curtas (máx 3-4 linhas) a não ser que peçam mais detalhes.
-- NÃO fale sobre informações pessoais sensíveis como endereço completo ou documentos.
-`;
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={i} className="font-semibold text-white">
+          {part.slice(2, -2)}
+        </strong>
+      );
+    }
 
-const SYSTEM_MESSAGE = {
-  role: 'user',
-  parts: [{ text: `${VITOR_PROFILE}\n\nPrimeira mensagem: Diga olá e apresente-se brevemente em 2 linhas.` }]
-};
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code
+          key={i}
+          className="font-mono text-[0.85em] px-1 py-0.5 rounded bg-primary-cyan/10 text-primary-cyan-light"
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+
+    const link = /^\[([^\]]+)\]\((https?:\/\/[^)]+|mailto:[^)]+)\)$/.exec(part);
+    if (link) {
+      return (
+        <a
+          key={i}
+          href={link[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-primary-cyan-light underline underline-offset-2 hover:text-primary-cyan"
+        >
+          {link[1]}
+        </a>
+      );
+    }
+
+    return part;
+  });
+}
 
 export default function Assistant() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { role: 'assistant', text: GREETING, time: formatTime() },
+  ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [initialized, setInitialized] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const abortRef = useRef(null);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [messages, isLoading]);
 
   useEffect(() => {
-    if (isOpen && !initialized) {
-      initializeChat();
-    }
-    if (isOpen && inputRef.current) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
+    if (!isOpen) return;
+
+    const timer = setTimeout(() => inputRef.current?.focus(), 120);
+    const onKey = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('keydown', onKey);
+    };
   }, [isOpen]);
 
-  const initializeChat = async () => {
-    setIsLoading(true);
-    setInitialized(true);
-    try {
-      const greeting = await callGemini([SYSTEM_MESSAGE], '');
-      setMessages([{ role: 'assistant', text: greeting, time: formatTime() }]);
-    } catch (err) {
-      setMessages([{
-        role: 'assistant',
-        text: 'Olá! Sou o assistente virtual do Vitor. Pode me perguntar sobre as habilidades, projetos ou como entrar em contato! 🚀',
-        time: formatTime()
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Cancela uma resposta em voo se o componente sair da tela.
+  useEffect(() => () => abortRef.current?.abort(), []);
 
-  const formatTime = () => {
-    return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  };
+  const send = useCallback(
+    async (rawText) => {
+      const trimmed = rawText.trim();
+      if (!trimmed || isLoading) return;
 
-  const callGemini = async (history, userMessage) => {
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-    if (!apiKey) throw new Error('API key not configured');
+      const userMsg = { role: 'user', text: trimmed, time: formatTime() };
+      // O histórico enviado é o mesmo que está na tela, então a conversa que o
+      // modelo vê nunca diverge do que o visitante leu.
+      const history = [...messages, userMsg];
 
-    const contents = [
-      // Context message
-      {
-        role: 'user',
-        parts: [{ text: `${VITOR_PROFILE}\n\nAgora responda a seguinte pergunta do visitante:` }]
-      },
-      {
-        role: 'model',
-        parts: [{ text: 'Entendido! Estou pronto para ajudar os visitantes do portfólio do Vitor.' }]
-      },
-      // Conversation history (skip init message)
-      ...history.slice(1).map(m => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        parts: [{ text: m.text || m.parts?.[0]?.text || '' }]
-      })),
-      // New user message
-      ...(userMessage ? [{ role: 'user', parts: [{ text: userMessage }] }] : [])
-    ];
+      setMessages(history);
+      setInput('');
+      setIsLoading(true);
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents,
-          generationConfig: { maxOutputTokens: 300, temperature: 0.7 }
-        })
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      try {
+        const res = await fetch('/api/assistant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            history: history.map(({ role, text }) => ({ role, text })),
+          }),
+          signal: controller.signal,
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) throw new Error(data?.error || `Erro ${res.status}`);
+
+        setMessages((prev) => [
+          ...prev,
+          { role: 'assistant', text: data.text, time: formatTime() },
+        ]);
+      } catch (error) {
+        if (error.name === 'AbortError') return;
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            text: `${error.message} Você pode falar direto com o Vitor: ${personalData.email}`,
+            time: formatTime(),
+            isError: true,
+          },
+        ]);
+      } finally {
+        setIsLoading(false);
       }
-    );
-
-    if (!response.ok) throw new Error('API error');
-    const data = await response.json();
-    return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Desculpe, não consegui processar sua pergunta.';
-  };
-
-  const handleSend = async () => {
-    const trimmed = input.trim();
-    if (!trimmed || isLoading) return;
-
-    const userMsg = { role: 'user', text: trimmed, time: formatTime() };
-    const newMessages = [...messages, userMsg];
-    setMessages(newMessages);
-    setInput('');
-    setIsLoading(true);
-
-    try {
-      // Build history for API (init + conversation so far)
-      const historyForApi = [SYSTEM_MESSAGE, ...newMessages.map(m => ({
-        role: m.role === 'user' ? 'user' : 'model',
-        text: m.text
-      }))];
-      const response = await callGemini(historyForApi.slice(0, -1), trimmed);
-      setMessages(prev => [...prev, { role: 'assistant', text: response, time: formatTime() }]);
-    } catch (err) {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        text: 'Ops! Tive um problema técnico. Tente novamente ou entre em contato pelo email: vitorbraga1777@gmail.com',
-        time: formatTime()
-      }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [isLoading, messages]
+  );
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSend();
+      send(input);
     }
   };
 
+  const showSuggestions = messages.length === 1 && !isLoading;
+
   return (
     <>
-      {/* Floating button */}
+      {/* Botão flutuante */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${isOpen ? 'opacity-0 pointer-events-none scale-75' : 'opacity-100 scale-100'} bg-[#0a0e1a] border-2 border-cyan-500 hover:shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:scale-110`}
-        aria-label="Abrir assistente"
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 bg-surface-raised border-2 border-primary-cyan hover:shadow-[0_0_20px_rgba(6,182,212,0.45)] hover:scale-110 ${
+          isOpen ? 'opacity-0 pointer-events-none scale-75' : 'opacity-100 scale-100'
+        }`}
+        aria-label="Abrir assistente virtual"
+        aria-expanded={isOpen}
       >
-        <BsRobot size={24} className="text-cyan-400" />
-        {/* Pulse ring */}
-        <span className="absolute inset-0 rounded-full border-2 border-cyan-400 animate-ping opacity-30" />
+        <BsRobot size={24} className="text-primary-cyan-light" />
+        <span className="absolute inset-0 rounded-full border-2 border-primary-cyan animate-ping opacity-30" />
       </button>
 
-      {/* Chat window */}
+      {/* Janela do chat */}
       <div
-        className={`fixed bottom-6 right-6 z-50 w-80 sm:w-96 flex flex-col rounded-xl overflow-hidden border border-cyan-500/30 shadow-[0_0_30px_rgba(0,229,255,0.15)] transition-all duration-300 origin-bottom-right ${isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
-        style={{ maxHeight: '520px', background: '#080c1a' }}
+        className={`fixed bottom-6 right-6 z-50 w-[calc(100vw-3rem)] max-w-sm flex flex-col rounded-xl overflow-hidden border border-primary-cyan/30 shadow-[0_0_40px_rgba(6,182,212,0.18)] transition-all duration-300 origin-bottom-right bg-surface-sunken ${
+          isOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'
+        }`}
+        style={{ maxHeight: 'min(560px, calc(100vh - 3rem))' }}
+        role="dialog"
+        aria-label="Assistente virtual do Vitor"
+        aria-hidden={!isOpen}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-cyan-500/20 bg-[#0a0e1a]">
-          <div className="flex items-center gap-3">
-            <div className="relative w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center">
-              <BsRobot size={16} className="text-cyan-400" />
-              <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-green-400 border border-[#0a0e1a]" />
+        {/* Barra de título estilo terminal */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-primary-cyan/20 bg-surface-raised">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex gap-1.5 flex-shrink-0" aria-hidden="true">
+              <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+              <span className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
             </div>
-            <div>
-              <p className="text-xs font-extrabold text-cyan-400 tracking-widest uppercase">ASSISTENTE DO VITOR</p>
+            <div className="min-w-0">
+              <p className="text-[11px] font-mono text-primary-cyan-light truncate">
+                vhb@portfolio: ~/assistente
+              </p>
               <p className="text-[10px] text-green-400 font-mono flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block animate-pulse" />
-                ONLINE
+                online
               </p>
             </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="text-gray-500 hover:text-white transition-colors p-1 rounded hover:bg-white/5"
+            className="text-gray-500 hover:text-white transition-colors p-1 rounded hover:bg-white/5 flex-shrink-0"
+            aria-label="Fechar assistente"
           >
             <IoClose size={20} />
           </button>
         </div>
 
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ minHeight: '280px', maxHeight: '340px' }}>
+        {/* Mensagens */}
+        <div
+          className="flex-1 overflow-y-auto p-4 space-y-3 min-h-[280px]"
+          aria-live="polite"
+          aria-atomic="false"
+        >
           {messages.map((msg, i) => (
-            <div key={i} className={`flex flex-col gap-1 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+            <div
+              key={i}
+              className={`flex flex-col gap-1 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+            >
               <div
-                className={`max-w-[85%] px-3 py-2 rounded-lg text-sm leading-relaxed ${
+                className={`max-w-[85%] px-3 py-2 rounded-lg text-sm leading-relaxed whitespace-pre-wrap break-words ${
                   msg.role === 'user'
-                    ? 'bg-cyan-500/15 border border-cyan-500/30 text-white rounded-br-none'
-                    : 'bg-[#0d1224] border border-[#1a2040] text-gray-200 rounded-bl-none'
+                    ? 'bg-primary-cyan/15 border border-primary-cyan/30 text-white rounded-br-none'
+                    : msg.isError
+                      ? 'bg-red-500/10 border border-red-500/30 text-red-200 rounded-bl-none'
+                      : 'bg-surface-base border border-surface-line text-gray-200 rounded-bl-none'
                 }`}
               >
-                {msg.text}
+                {msg.role === 'assistant' ? renderRich(msg.text) : msg.text}
               </div>
               <span className="text-[10px] text-gray-600 font-mono px-1">{msg.time}</span>
             </div>
           ))}
 
           {isLoading && (
-            <div className="flex items-start gap-2">
-              <div className="bg-[#0d1224] border border-[#1a2040] px-3 py-2 rounded-lg rounded-bl-none">
-                <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="flex items-start">
+              <div className="bg-surface-base border border-surface-line px-3 py-2 rounded-lg rounded-bl-none">
+                <div className="flex gap-1" aria-label="Digitando">
+                  {[0, 150, 300].map((delay) => (
+                    <span
+                      key={delay}
+                      className="w-1.5 h-1.5 bg-primary-cyan-light rounded-full animate-bounce"
+                      style={{ animationDelay: `${delay}ms` }}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
           )}
+
+          {showSuggestions && (
+            <div className="flex flex-wrap gap-2 pt-1">
+              {SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => send(s)}
+                  className="text-[11px] font-mono px-2.5 py-1.5 rounded-full border border-primary-cyan/25 text-primary-cyan-light hover:bg-primary-cyan/10 hover:border-primary-cyan/50 transition-colors text-left"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input */}
-        <div className="px-3 py-3 border-t border-cyan-500/20 bg-[#0a0e1a]">
-          <div className="flex items-center gap-2 bg-[#080c1a] border border-[#1a2040] rounded-lg px-3 py-2 focus-within:border-cyan-500/50 transition-colors">
+        {/* Entrada com prompt de shell */}
+        <div className="px-3 py-3 border-t border-primary-cyan/20 bg-surface-raised">
+          <div className="flex items-center gap-2 bg-surface-sunken border border-surface-line rounded-lg px-3 py-2 focus-within:border-primary-cyan/50 transition-colors">
+            <span className="text-primary-cyan font-mono text-sm select-none" aria-hidden="true">
+              $
+            </span>
             <input
               ref={inputRef}
               type="text"
               value={input}
-              onChange={e => setInput(e.target.value)}
+              onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Pergunte-me algo..."
+              placeholder="pergunte algo..."
+              maxLength={1000}
               disabled={isLoading}
-              className="flex-1 bg-transparent text-sm text-white placeholder-gray-600 outline-none"
+              aria-label="Escreva sua pergunta"
+              className="flex-1 min-w-0 bg-transparent text-sm font-mono text-white placeholder-gray-600 outline-none disabled:opacity-50"
             />
             <button
-              onClick={handleSend}
+              onClick={() => send(input)}
               disabled={isLoading || !input.trim()}
-              className="text-cyan-400 hover:text-cyan-300 disabled:text-gray-700 transition-colors p-1"
+              className="text-primary-cyan hover:text-primary-cyan-light disabled:text-gray-700 transition-colors p-1"
+              aria-label="Enviar pergunta"
             >
               <IoPaperPlane size={18} />
             </button>

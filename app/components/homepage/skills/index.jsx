@@ -5,6 +5,7 @@ import { skillsData } from "@/utilitários/data/skills";
 import { skillsImage } from "@/utilitários/skill-image";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import SectionHeader from "../../helper/section-header";
 
 const levelConfig = {
   'Avançado':      { pct: 90, border: '#00e5ff', badge: 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40',    bar: 'bg-gradient-to-r from-cyan-500 to-cyan-300' },
@@ -113,21 +114,7 @@ function Skills() {
     <div id="skills" className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
       <div className="w-[100px] h-[100px] bg-primary-purple rounded-full absolute top-6 left-[42%] translate-x-1/2 filter blur-3xl opacity-20" />
 
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-primary-purple to-transparent w-full" />
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="flex flex-col items-center my-8 lg:py-4 gap-2">
-        <h2 className="text-2xl lg:text-4xl font-extrabold tracking-widest text-white uppercase">
-          ÁRVORE DE SKILLS
-        </h2>
-        <p className="text-primary-cyan font-mono text-sm">
-          {'>'} habilidades e power-ups desbloqueados
-        </p>
-      </div>
+      <SectionHeader title="Árvore de Skills" command="skills --unlocked" />
 
       {/* Category filter tabs */}
       <div className="flex flex-wrap justify-center gap-2 mb-8">

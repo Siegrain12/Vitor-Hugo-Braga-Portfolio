@@ -7,6 +7,8 @@ const GlowCard = ({ children , identifier}) => {
     const CONTAINER = document.querySelector(`.glow-container-${identifier}`);
     const CARDS = document.querySelectorAll(`.glow-card-${identifier}`);
 
+    if (!CONTAINER) return;
+
     const CONFIG = {
       proximity: 40,
       spread: 80,
@@ -59,8 +61,9 @@ const GlowCard = ({ children , identifier}) => {
       );
     };
 
+    // UPDATE() sem evento faria Math.atan2(undefined, ...) => NaN em --start.
+    // O estado inicial de --active já vem do card.css.
     RESTYLE();
-    UPDATE();
 
     // Cleanup event listener
     return () => {

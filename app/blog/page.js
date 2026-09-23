@@ -3,15 +3,28 @@
 import { personalData } from "@/utilitários/data/personal-data";
 import BlogCard from "../components/homepage/blog/blog-card";
 
+export const metadata = {
+  title: "Artigos | Vitor Hugo Braga",
+  description: "Artigos escritos por Vitor Hugo Braga.",
+};
+
 async function getBlogs() {
-  const res = await fetch(`https://dev.to/api/articles?username=${personalData.devUsername}`)
+  if (!personalData.devUsername) return [];
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+  try {
+    const res = await fetch(
+      `https://dev.to/api/articles?username=${personalData.devUsername}`,
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    return Array.isArray(data) ? data.filter((blog) => blog?.cover_image) : [];
+  } catch (error) {
+    console.error('Falha ao buscar artigos do dev.to:', error.message);
+    return [];
   }
-
-  const data = await res.json();
-  return data;
 };
 
 async function page() {
@@ -19,24 +32,26 @@ async function page() {
 
   return (
     <div className="py-8">
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-          <span className="bg-[#1a1443] w-fit text-white p-2 px-5 text-2xl rounded-md">
-            Todos os Artigos
-          </span>
-          <span className="w-24 h-[2px] bg-[#1a1443]"></span>
-        </div>
+      <div className="flex flex-col items-center my-8 lg:py-4 gap-2">
+        <h1 className="text-2xl lg:text-4xl font-extrabold tracking-widest text-white uppercase">
+          Todos os Artigos
+        </h1>
+        <p className="text-primary-cyan font-mono text-sm">
+          {'>'} cat ~/blog/*.md
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 lg:gap-8 xl:gap-10">
-        {
-          blogs.map((blog, i) => (
-            blog?.cover_image &&
-            <BlogCard blog={blog} key={i} />
-          ))
-        }
-      </div>
+      {blogs.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 lg:gap-8 xl:gap-10">
+          {blogs.map((blog) => (
+            <BlogCard blog={blog} key={blog.id} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center py-16 text-gray-600 font-mono text-sm">
+          {'>'} Nenhum artigo publicado ainda...
+        </p>
+      )}
     </div>
   );
 };

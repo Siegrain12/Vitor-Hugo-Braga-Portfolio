@@ -45,6 +45,23 @@ Este portfólio foi desenvolvido com as tecnologias mais modernas para demonstra
 - ✅ **Dark Theme**: Design com tema escuro profissional
 - ✅ **Docker Support**: Suporte a containerização
 - ✅ **Project Modal**: Modal interativo para visualizar projetos
+- ✅ **Assistente de IA**: Chat que responde sobre skills, projetos e contato
+
+---
+
+## Tema e estilos :art:
+
+O Tailwind aqui é a **v4**, então **não existe `tailwind.config.js`**: todo o
+tema (paleta `primary-*`, superfícies `surface-*`, fontes e animações) vive no
+bloco `@theme` de [`app/css/globals.css`](app/css/globals.css). Para adicionar
+uma cor ou animação, é lá.
+
+Duas armadilhas que vale conhecer ao mexer nas classes:
+
+- Um `tailwind.config.js` no formato v3 é **ignorado em silêncio** — as classes
+  simplesmente não são geradas e os elementos ficam sem cor.
+- O Tailwind lê o **texto** dos arquivos, então classe montada por template
+  string (`` `group-hover:${cor}` ``) nunca é gerada. Escreva a classe inteira.
 
 ---
 
@@ -132,6 +149,24 @@ Edite o arquivo `.env.local`:
 GMAIL_PASSKEY=sua_senha_app_gmail
 EMAIL_ADDRESS=seu_email@gmail.com
 ```
+
+### Configurar o Assistente de IA
+
+O assistente usa a API do Gemini através da rota `/api/assistant`, que roda no
+servidor. Pegue uma chave gratuita em https://aistudio.google.com/apikey e
+coloque no `.env.local`:
+
+```env
+GEMINI_API_KEY=sua_chave_aqui
+```
+
+> A chave **não** leva o prefixo `NEXT_PUBLIC_`. Variáveis com esse prefixo são
+> embutidas no JavaScript enviado ao navegador e qualquer visitante conseguiria
+> copiá-las e gastar a sua cota. Ao publicar na Vercel, cadastre `GEMINI_API_KEY`
+> em Settings → Environment Variables.
+
+Se a chave não estiver configurada, o assistente responde com uma mensagem
+explicando que está indisponível — o resto do site continua funcionando.
 
 ---
 

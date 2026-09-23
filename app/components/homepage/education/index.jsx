@@ -5,6 +5,7 @@ import { BsPersonWorkspace } from "react-icons/bs";
 import lottieFile from '../../../assets/lottie/study.json';
 import AnimationLottie from "../../helper/animation-lottie";
 import GlowCard from "../../helper/glow-card";
+import SectionHeader from "../../helper/section-header";
 
 function Education() {
   return (
@@ -16,21 +17,7 @@ function Education() {
         height={795}
         className="absolute top-0 -z-10"
       />
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-primary-purple to-transparent  w-full" />
-        </div>
-      </div>
-
-      <div className="flex justify-center my-5 lg:py-8">
-        <div className="flex  items-center">
-          <span className="w-24 h-[2px] bg-gradient-to-r from-primary-purple to-primary-cyan"></span>
-          <span className="bg-gradient-purple-cyan bg-clip-text text-transparent p-2 px-5 text-xl rounded-md font-bold">
-            Formação
-          </span>
-          <span className="w-24 h-[2px] bg-gradient-to-r from-primary-cyan to-primary-purple"></span>
-        </div>
-      </div>
+      <SectionHeader title="Formação" command="cat ~/edu/*.log" />
 
       <div className="py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">

@@ -1,0 +1,35 @@
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grid-planit" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#06b6d4" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="glow-planit" cx="82%" cy="18%" r="60%">
+      <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="text-planit" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#67e8f9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="400" fill="#0a0e1a"/>
+  <rect width="800" height="400" fill="url(#grid-planit)"/>
+  <rect width="800" height="400" fill="url(#glow-planit)"/>
+
+  <!-- terminal dots -->
+  <circle cx="40" cy="40" r="6" fill="#f87171"/>
+  <circle cx="62" cy="40" r="6" fill="#fbbf24"/>
+  <circle cx="84" cy="40" r="6" fill="#86efac"/>
+
+  <!-- code icon -->
+  <text x="60" y="230" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="120" font-weight="700" fill="#06b6d4" fill-opacity="0.16">&lt;/&gt;</text>
+
+  <text x="60" y="270" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="52" font-weight="800" letter-spacing="2" fill="url(#text-planit)">Planit</text>
+  <text x="60" y="304" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="18" letter-spacing="3" fill="#67e8f9" fill-opacity="0.85">FULL STACK · AGENDAMENTOS</text>
+
+  <text x="60" y="345" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="15" fill="#64748b">React · Node.js · Firebase · SQL · TypeScript</text>
+
+  <rect x="700" y="30" width="70" height="26" rx="13" fill="#06b6d4" fill-opacity="0.12" stroke="#06b6d4" stroke-opacity="0.4"/>
+  <text x="735" y="47" text-anchor="middle" font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="12" font-weight="700" letter-spacing="1" fill="#22d3ee">v1.0</text>
+</svg>

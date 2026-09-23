@@ -35,10 +35,9 @@ function ContactForm() {
 
     try {
       setIsLoading(true);
-      const apiUrl = process.env.NEXT_PUBLIC_APP_URL
-        ? `${process.env.NEXT_PUBLIC_APP_URL}/api/contact`
-        : '/api/contact';
-      const res = await axios.post(apiUrl, userInput);
+      // Caminho relativo: o formulário sempre fala com a própria origem, então
+      // não quebra em preview deploys nem depende de NEXT_PUBLIC_APP_URL.
+      await axios.post('/api/contact', userInput);
 
       toast.success("Mensagem enviada com sucesso!");
       setUserInput({
@@ -46,8 +45,11 @@ function ContactForm() {
         email: "",
         message: "",
       });
-    } catch (error) {
-      toast.error(error?.response?.data?.message);
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message ||
+        "Não foi possível enviar a mensagem. Tente novamente ou use o email ao lado."
+      );
     } finally {
       setIsLoading(false);
     };
@@ -126,6 +128,6 @@ function ContactForm() {
       </div>
     </div>
   );
-};;
+};
 
 export default ContactForm;

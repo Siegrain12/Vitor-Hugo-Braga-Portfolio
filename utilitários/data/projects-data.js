@@ -7,6 +7,7 @@ export const projectsData = [
         role: 'Full Stack Developer',
         code: 'https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-1-e3-proj-mov-t2-planit',
         demo: '',
+        image: '/projects/planit.svg',
     },
     {
         id: 2,
@@ -16,6 +17,7 @@ export const projectsData = [
         role: 'Full Stack Developer',
         code: 'https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2026-1-e5-proj-empext-t2-vetconnect',
         demo: '',
+        image: '/projects/vetconnect.svg',
     },
     {
         id: 3,
@@ -25,6 +27,7 @@ export const projectsData = [
         role: 'Full Stack Developer',
         code: 'https://github.com/ICEI-PUC-Minas-PMV-ADS/pmv-ads-2025-2-e4-proj-infra-t3-solupay',
         demo: '',
+        image: '/projects/soluplay.svg',
     },
     {
         id: 4,
@@ -49,4 +52,5 @@ export const projectsData = [
 //     role: '',
 //     code: '',
 //     demo: '',
+//     image: '', // opcional: caminho em /public para a capa do card
 // },

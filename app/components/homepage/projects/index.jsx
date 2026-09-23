@@ -2,13 +2,12 @@
 'use client';
 
 import { projectsData } from '@/utilitários/data/projects-data';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FaCode, FaExternalLinkAlt, FaGithub, FaTimes } from 'react-icons/fa';
 import { HiSparkles } from 'react-icons/hi';
-
-// Gather unique techs from all projects
-const allTechs = ['Todos', ...Array.from(new Set(projectsData.flatMap(p => p.tools)))];
+import SectionHeader from '../../helper/section-header';
 
 function StatusBadge({ project }) {
   if (project.demo) return <span className="bg-green-500/20 border border-green-500/40 text-green-400 text-[10px] font-bold px-2 py-0.5 rounded tracking-widest uppercase">ATIVO</span>;
@@ -105,13 +104,6 @@ function ProjectModal({ project, onClose }) {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes modal-in {
-          from { opacity: 0; transform: scale(0.95) translateY(10px); }
-          to   { opacity: 1; transform: scale(1)   translateY(0);     }
-        }
-        .animate-modal-in { animation: modal-in 0.2s ease forwards; }
-      `}</style>
     </div>
   );
 }
@@ -125,7 +117,13 @@ function ProjectCard({ project, onClick }) {
       {/* Thumbnail */}
       <div className="relative h-40 bg-[#0a0e1a] flex items-center justify-center overflow-hidden">
         {project.image ? (
-          <img src={project.image} alt={project.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+          <Image
+            src={project.image}
+            alt={project.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+          />
         ) : (
           <div className="flex flex-col items-center gap-3 text-[#1a3050]">
             <FaCode size={48} className="group-hover:text-cyan-800 transition-colors duration-300" />
@@ -210,23 +208,11 @@ const Projects = () => {
     <div id='projects' className="relative z-50 my-12 lg:my-24 border-t border-[#25213b]">
       <div className="w-[80px] h-[80px] bg-primary-purple rounded-full absolute -top-3 left-0 translate-x-1/2 filter blur-3xl opacity-30" />
 
-      <div className="flex justify-center -translate-y-[1px]">
-        <div className="w-3/4">
-          <div className="h-[1px] bg-gradient-to-r from-transparent via-primary-purple to-transparent w-full" />
-        </div>
-      </div>
-
-      {/* Header */}
-      <div className="flex flex-col items-center my-8 lg:py-4 gap-2">
-        <h2 className="text-2xl lg:text-4xl font-extrabold tracking-widest text-white uppercase flex items-center gap-3">
-          <HiSparkles className="text-primary-cyan" />
-          DIÁRIO DE QUESTS
-          <HiSparkles className="text-primary-purple" />
-        </h2>
-        <p className="text-primary-cyan font-mono text-sm">
-          {'>'} missões completadas e ativas
-        </p>
-      </div>
+      <SectionHeader
+        title="Diário de Quests"
+        command="ls ~/projetos --status"
+        icon={HiSparkles}
+      />
 
       {/* Tech filter */}
       <div className="flex flex-wrap justify-center gap-2 mb-8">

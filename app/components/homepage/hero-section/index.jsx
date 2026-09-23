@@ -18,31 +18,36 @@ const roles = [
 ];
 
 function useTypewriter(texts, speed = 80, pause = 1800) {
-  const [displayed, setDisplayed] = useState('');
   const [textIdx, setTextIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
   const [deleting, setDeleting] = useState(false);
 
+  const current = texts[textIdx];
+  const total = texts.length;
+
   useEffect(() => {
-    const current = texts[textIdx];
     let timeout;
 
     if (!deleting && charIdx < current.length) {
-      timeout = setTimeout(() => setCharIdx(c => c + 1), speed);
-    } else if (!deleting && charIdx === current.length) {
+      timeout = setTimeout(() => setCharIdx((c) => c + 1), speed);
+    } else if (!deleting) {
       timeout = setTimeout(() => setDeleting(true), pause);
-    } else if (deleting && charIdx > 0) {
-      timeout = setTimeout(() => setCharIdx(c => c - 1), speed / 2);
-    } else if (deleting && charIdx === 0) {
-      setDeleting(false);
-      setTextIdx(i => (i + 1) % texts.length);
+    } else if (charIdx > 0) {
+      timeout = setTimeout(() => setCharIdx((c) => c - 1), speed / 2);
+    } else {
+      // Passa para a próxima frase. Agendado, e não chamado direto no corpo do
+      // efeito, para não disparar renders em cascata.
+      timeout = setTimeout(() => {
+        setDeleting(false);
+        setTextIdx((i) => (i + 1) % total);
+      }, speed / 2);
     }
 
-    setDisplayed(current.slice(0, charIdx));
     return () => clearTimeout(timeout);
-  }, [charIdx, deleting, textIdx, texts, speed, pause]);
+  }, [charIdx, deleting, current, total, speed, pause]);
 
-  return displayed;
+  // Texto derivado do estado: não precisa de um useState só para ele.
+  return current.slice(0, charIdx);
 }
 
 function HeroSection() {
@@ -76,8 +81,9 @@ function HeroSection() {
           {/* Typewriter role */}
           <div className="mt-3 flex items-center gap-2 h-8">
             <span className="text-primary-cyan text-lg lg:text-xl font-semibold font-mono">
+              <span className="text-gray-600 mr-1.5">$</span>
               {role}
-              <span className="inline-block w-0.5 h-5 bg-primary-cyan ml-0.5 animate-pulse align-middle" />
+              <span className="inline-block w-[8px] h-5 bg-primary-cyan ml-0.5 animate-caret align-middle" />
             </span>
           </div>
 
@@ -139,12 +145,13 @@ function HeroSection() {
             <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-primary-purple to-primary-cyan"></div>
             <div className="h-[1px] w-full bg-gradient-to-r from-primary-cyan to-transparent"></div>
           </div>
-          <div className="px-4 lg:px-8 py-5">
+          <div className="flex items-center justify-between px-4 lg:px-8 py-4">
             <div className="flex flex-row space-x-2">
               <div className="h-3 w-3 rounded-full bg-red-400"></div>
               <div className="h-3 w-3 rounded-full bg-orange-400"></div>
               <div className="h-3 w-3 rounded-full bg-green-200"></div>
             </div>
+            <span className="font-mono text-[11px] text-gray-500 tracking-wider">coder.js</span>
           </div>
           <div className="overflow-hidden border-t-[2px] border-indigo-900 px-4 lg:px-8 py-4 lg:py-8">
             <code className="font-mono text-xs md:text-sm lg:text-base">
