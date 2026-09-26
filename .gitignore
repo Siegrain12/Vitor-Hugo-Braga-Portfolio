@@ -42,3 +42,7 @@ next-env.d.ts
 # Subrepositórios acidentais
 Vitor-Hugo-Braga-Portfolio/
 
+# Package manager lock files (usar apenas npm / package-lock.json)
+pnpm-lock.yaml
+yarn.lock
+
