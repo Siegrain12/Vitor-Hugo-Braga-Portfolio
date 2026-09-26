@@ -5,7 +5,7 @@ import { personalData } from "@/utilitários/data/personal-data";
 import Image from "next/image";
 
 const stats = [
-  { value: "4+", label: "Anos de Experiência", color: "text-primary-cyan" },
+  { value: "3+", label: "Anos de Experiência", color: "text-primary-cyan" },
   { value: "3",  label: "Projetos Finalizados", color: "text-primary-purple" },
   { value: "20+", label: "Tecnologias",         color: "text-pink-400" },
   { value: "1",  label: "Certificado Acadêmico", color: "text-amber-400" },
